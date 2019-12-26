@@ -1,0 +1,45 @@
+def costfunc(x,y,th): #cost function
+    temp = np.dot(x,th) - y
+    cst = np.sum(np.square(temp))/(2*n)
+    return cst
+
+def plotting(x,y,th): # plotting
+    k = np.dot(x,th)
+    mp.xlabel('Population')
+    mp.ylabel('Profit')
+    mp.scatter(x[:,1],y,color = 'black')
+    mp.plot(x[:,1],k,color = 'red')
+
+def gdesc(x,y,th,m,a): #gradient descent
+    for i in range(m):
+        val = np.dot(x,th) - y
+        val = np.dot(x.T, val)
+        th = th - (a/n) * val
+    return th
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as mp
+file = pd.read_csv('ex1data1.txt')
+x = file.iloc[:,0]
+y = file.iloc[:,1]
+n = len(x)
+x = x.to_numpy()
+y = y.to_numpy()
+y = y.reshape(n,1)
+x = x.reshape(n,1)
+uno = np.ones((n,1))
+x = np.hstack((uno,x)) #adds the row of ones to x
+th = np.zeros([2,1])
+c_cost1 = costfunc(x,y,th)
+print("Current cost is:",c_cost1)
+print("Graph of unoptimized function is:")
+print("Theta values are:",th)
+plotting(x,y,th) #th is currently 0
+
+th = gdesc(x,y,th,17000,0.01) # gdesc will run 17000 times with alpha = 0.001
+c_cost2 = costfunc(x,y,th)
+print("Current cost is:",c_cost2)
+print("Graph of optimized function is:")
+print("Theta values are:",th)
+plotting(x,y,th)  
