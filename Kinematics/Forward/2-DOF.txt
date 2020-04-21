@@ -1,0 +1,74 @@
+FORWARD KINEMATICS:
+
+~~~~~~~ 2-D, 2-DOF arm ~~~~~~~
+
+#Geometric Approach:
+
+import math as m
+l1 = 10;
+l2 = 10;
+th1 = 36;   #th1 is the elevation to the link1
+th2 = 72;   #thr is the angle between link1 and link2
+th4 = 180 - th2;
+x = l1*m.cos(m.radians(th1)) + l2*m.cos(m.radians(th1+th2));
+y = l1*m.sin(m.radians(th1)) + l2*m.sin(m.radians(th1+th2));
+if(abs(x) < 0.5): x = 0;
+if(abs(y) < 0.5): y = 0;
+print("x =",round(x));
+print("y =",round(y));
+
+~~~~~~~ ~~~~~~~
+
+#Transformation Matrix Approach:
+import math 
+
+l1 = 10;
+l2 = 10;
+th1 = 90;   #inclination of link 1 w.r.t x-axis
+th2 = -90;   #inclination of link 2 w.r.t link 1
+
+x1 = l2*math.cos(math.radians(th2));
+y1 = l2*math.sin(math.radians(th2));
+
+X = x1*math.cos(math.radians(th1)) - y1*math.sin(math.radians(th1));
+Y = x1*math.sin(math.radians(th1)) + y1*math.cos(math.radians(th1));
+
+x = X + l1*math.cos(math.radians(th1));
+y = Y + l1*math.sin(math.radians(th1));
+if(abs(x)<0.1):
+    x = 0;
+if(abs(y)<0.1):
+    y = 0;
+print(x);
+print(y);
+
+~~~~~~~ ~~~~~~~
+
+#Product Of Exponentials Approach:
+
+import numpy as np 
+import modern_robotics as mr 
+import math as m
+
+l1 = 5   #Link 1 Length
+l2 = 5   #Link 2 Length
+l = l1+l2
+th1 = m.radians(45)   # inclination of link 1
+th2 = m.radians(0)   # inclination of link 2
+print(th1)
+M = np.array ([[ 1 , 0 , 0 , l ],
+               [ 0 , 1 , 0 , 0 ],
+               [ 0 , 0 , 1 , 0 ],
+               [ 0 , 0 , 0 , 1 ]])
+#M
+
+Slist = np.array([[ 0 , 0 , 1 , 0 ,  0    , 0 ],
+                  [ 0 , 0 , 1 , 0 , -1*l1 , 0 ]]).T
+
+#Slist
+
+thlist = np.array([ th1 , th2 ])
+#thlist
+
+R = mr.FKinSpace(M,Slist,thlist)
+R
